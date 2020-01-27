@@ -9,7 +9,7 @@ import * as serviceWorker from './serviceWorker';
 import { render } from '@testing-library/react';
 
 const client = new ApolloClient({
-    uri: 'https://48p1r2roz4.sse.codesandbox.io',
+    uri: 'http://localhost:4000/graphql',
 })
 
 
@@ -22,18 +22,27 @@ const EXCHANGE_RATES = gql`
     }
 `;
 
-function ExchangeRates() {
-    const { loading, error, data } = useQuery(EXCHANGE_RATES);
 
+function Whislists() {
+    const { loading, error, data } = useQuery(gql `
+    {
+        wishlists{
+            opportunitySFID,
+            id
+          }
+    }
+    `);
+    
     if(loading) return <p>Loading...</p>;
     if(error) return <p>Error :(</p>;
 
-    return data.rates.map(({ currency, rate }) => (
-        <div key={currency}>
+    return data.wishlists.map(( { opportunitySFID, id }) => (
+        <div key={id}>
             <p>
-                {currency}: {rate}
+                {id}: {opportunitySFID}
             </p>
         </div>
+
     ));
 }
 
@@ -42,23 +51,12 @@ const App = () => (
     <ApolloProvider client={client}>
         <div>
             <h2>My first Apollo App</h2>
-            <ExchangeRates />
+            <Whislists />
         </div>
     </ApolloProvider>
 );
 
 render(<App />, document.getElementById('root'));
-
-
-// client.query({
-//     query: gql`
-//         {
-//             rates(currency: "USD") {
-//                 currency
-//             }
-//         }
-//     `
-// }).then(result => console.log(result));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
