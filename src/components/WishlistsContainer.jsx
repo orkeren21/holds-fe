@@ -68,7 +68,7 @@ class WishlistsContainer extends React.Component{
         this.setState(() => ({ selectedWishlist: target.value }));
     };
 
-    onWishlistSelected2 = ({ target }) => {
+    onWishlistSelectedREST = ({ target }) => {
         fetch(`http://localhost:4000/api/v1/wishlist-entries?wishlistID=${target.value}`)
             .then(response => response.json())
             .then(data => this.setState({ entries: data.entries }));
@@ -77,7 +77,7 @@ class WishlistsContainer extends React.Component{
 
     renderWishlists = () => {
         return(
-                <select name="wishlist" onChange={this.onWishlistSelected2}>
+                <select name="wishlist" onChange={this.onWishlistSelectedREST}>
                     {this.state.wishlists.map(wishlist => (
                         <option key={wishlist.id} value={parseInt(wishlist.id, 10)}>
                             {wishlist.opportunitySFID}
@@ -102,17 +102,22 @@ class WishlistsContainer extends React.Component{
 
     render() {
         return (
-            <div>
-                <div>
+            <div align="center">
+                <div name="graphQL">
+                    GraphQL<br/><br/>
                     <WishlistsList onWishlistSelected={this.onWishlistSelected} />
 
                     { this.state.selectedWishlist &&  <WishlistEntries wishlistID={this.state.selectedWishlist}/>}
                 </div>
-                <div>
-                    { this.state.wishlists && this.renderWishlists() }
-                </div>
-                <div>
-                    {this.state.entries && this.renderEntries() }
+                <hr></hr>
+                <div name="REST">
+                    REST <br/><br/>
+                    <div>
+                        { this.state.wishlists && this.renderWishlists() }
+                    </div>
+                    <div>
+                        {this.state.entries && this.renderEntries() }
+                    </div>
                 </div>
             </div>
         );
